@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = ({ setToken }) => {
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,7 +13,7 @@ const Login = ({ setToken }) => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://10.81.19.242:5137/api/auth/login", {
+      const res = await axios.post("http://10.81.92.209:5137/api/auth/login", {
         username,
         password,
       });

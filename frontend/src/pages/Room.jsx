@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import axios from "axios";
 
 const token = localStorage.getItem("token");
-const socket = io("ws://10.81.19.242:5137", {
+const socket = io("ws://10.81.92.209:5137", {
   auth: { token },
 });
 
@@ -39,11 +39,13 @@ const Room = () => {
     socket.on("update-queue", handleUpdateQueue);
 
     axios
-      .get(`http://10.81.19.242:5137/api/room/${roomId}/playlist`)
+      .get(`http://10.81.92.209:5137/api/room/${roomId}/playlist`)
       .then((res) => setQueue(res.data))
       .catch((err) => {
-        if(err.response?.status === 401) {
-          const refreshToken = axios.get(`http://10.81.19.242:5137/api/refresh-token`);
+        if (err.response?.status === 401) {
+          const refreshToken = axios.get(
+            `http://10.81.92.209:5137/api/refresh-token`
+          );
           localStorage.setItem("token", refreshToken.data.token);
         } else {
           console.error("Error fetching queue:", err);
@@ -57,7 +59,7 @@ const Room = () => {
 
   useEffect(() => {
     axios
-      .get("http://10.81.19.242:5137/api/songs")
+      .get("http://10.81.92.209:5137/api/songs")
       .then((res) => setSongs(res.data))
       .catch((err) => console.error("Error fetching songs:", err));
   }, []);

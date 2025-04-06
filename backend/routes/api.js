@@ -2,6 +2,43 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 const authMiddleware = require("../middleware/auth");
+const fs = require("fs");
+const path = require("path");
+
+router.get("/stream/:songId", (req, res) => {
+  const { songId } = req.params;
+  const { startTime } = req.query; // Get start time from query
+  const songPath = path.join(__dirname, "../songs", `${songId}.mp3`);
+
+  if (!fs.existsSync(songPath)) {
+    return res.status(404).send("Song not found");
+  }
+
+  const stat = fs.statSync(songPath);
+  const fileSize = stat.size;
+
+  // Optional: Get the bitrate to calculate byte offset
+  const bitrate = 128 * 1024; // 128kbps (change based on actual audio bitrate)
+  let startByte = 0;
+
+  if (startTime) {
+    const timeElapsed = parseFloat(startTime); // Convert to seconds
+    startByte = Math.floor((bitrate / 8) * timeElapsed); // Calculate byte offset
+    if (startByte > fileSize) startByte = 0; // Prevent seeking past file
+  }
+
+  res.writeHead(206, {
+    "Content-Type": "audio/mpeg",
+    "Content-Length": fileSize - startByte,
+    "Accept-Ranges": "bytes",
+    "Content-Range": `bytes ${startByte}-${fileSize - 1}/${fileSize}`
+  });
+
+  const stream = fs.createReadStream(songPath, { start: startByte });
+  stream.pipe(res);
+});
+
+
 
 router.get("/user", authMiddleware, async (req, res) => {
   try {

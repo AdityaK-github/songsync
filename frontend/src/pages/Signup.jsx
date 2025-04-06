@@ -10,7 +10,10 @@ const Signup = ({ setToken }) => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://10.81.19.242:5137/api/auth/signup", { username, password });
+      const res = await axios.post("http://10.81.92.209:5137/api/auth/signup", {
+        username,
+        password,
+      });
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
       navigate("/");
@@ -22,8 +25,18 @@ const Signup = ({ setToken }) => {
   return (
     <div>
       <h2>Sign up</h2>
-      <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
       <button onClick={handleLogin}>Sign up</button>
     </div>
   );
